@@ -1,0 +1,44 @@
+<div class="items__item item">
+    <div class="item__top">
+        <a href="{{ url_for('user_feed', username=post['poster_name']) }}" class="item__head">
+            <div class="item__ava-wrap">
+                <img src="{{ post['poster_avatar'] }}" alt="{{ post['poster_name'] }} avatar"
+                     class="item__ava"
+                     width="47">
+            </div>
+            <span class="item__username">{{ post['poster_name'] }}</span>
+        </a>
+
+        {% if delete_is_visible %}
+            <a href="{{ url_for('remove_from_bookmarks', postid=post['pk']) }}" class="item__delete">Удалить</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('get_post', postid=post['pk']) }}" class="item__post-link">
+        <img src="{{ post['pic'] }}" alt="" width="348"
+             class="item__post-img">
+    </a>
+    <p class="item__descr">{{ post['content']|truncate(length = 50, killwords = True) }}</p>
+    <div class="item__post-info">
+        <p class="item__comments-counter">{{ post['comments_count']|comment_beautifier }}</p>
+
+        <div class="item__counter">
+            <img src="{{ url_for('static', filename= 'img/eye.png') }}" alt="" class="item__counter-icon"
+                 width="26">
+            <span class="item__counter-text">{{ post['views_count'] }}</span>
+        </div>
+        <div class="item__counter">
+            <img src="{{ url_for('static', filename= 'img/heart.png') }}" alt="" class="item__counter-icon"
+                 width="26">
+            <span class="item__counter-text">{{ post['likes_count'] }}</span>
+        </div>
+    </div>
+    <div class="item__post-bottom">
+        <a href="{{ url_for('get_post', postid=post['pk']) }}" class="item__btn-more">Подробнее</a>
+        <a href="{% if not post['pk']|is_post_in_bookmarks %}{{ url_for('add_to_bookmarks', postid=post['pk']) }}{% else %}{{ url_for('remove_from_bookmarks', postid=post['pk']) }}{% endif %}">
+            <button type="button" class="item__bookmark-btn {% if post['pk']|is_post_in_bookmarks %}active{% endif %}" style="cursor: pointer;">
+                <img src="{{ url_for('static', filename= 'img/bookmark.png') }}" alt=""
+                     class="item__bookmark-icon" width="24">
+            </button>
+        </a>
+    </div>
+</div>
