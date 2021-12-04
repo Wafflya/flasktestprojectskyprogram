@@ -51,6 +51,7 @@ def get_post_by_id(postid):
         post = next(filter(lambda x: x['pk'] == postid, json.load(data_file)), None)
     return post
 
+
 # Получение комментариев, относящихся к посту с id = postid
 def get_comments_by_post(postid):
     with open('data/comments.json', 'r', encoding='utf-8') as fp:
@@ -74,6 +75,7 @@ def get_posts_with_comments_count(filter_func=(lambda _: True)):
             post['comments_count'] = comments_count
     return filtered_posts
 
+
 # Добавление поста в базу закладок
 def add_post_to_bookmarks(postid):
     with open('data/bookmarks.json', 'r', encoding='utf-8') as bookmarks:
@@ -82,6 +84,7 @@ def add_post_to_bookmarks(postid):
         data.append({'id': postid})
     with open('data/bookmarks.json', 'w', encoding='utf-8') as bookmarks:
         json.dump(data, bookmarks)
+
 
 # Удаление поста из базы закладок
 def delete_post_from_bookmarks(postid):
@@ -143,9 +146,9 @@ def index():
 # Отображение одного поста с комментариями к нему
 @app.route('/posts/<int:postid>')
 def get_post(postid):
-    if get_post_by_id(postid) is None:
-        abort(404)
     post_with_tags = get_post_by_id(postid)
+    if post_with_tags is None:
+        abort(404)
     post_with_tags['content'] = re.sub(
         pattern=r"#(\w*[а-яА-Я]*)",
         repl=lambda match_obj: '<a href=/tag/{0}>#{0}</a>'.format(match_obj.group(1)),
@@ -185,17 +188,20 @@ def posts_by_tag(tagname):
     )
     return render_template('tag.html', posts_with_tag=posts_with_tag, tag=tagname)
 
+
 # Урл для добавления поста в закладки
 @app.route('/bookmarks/add/<int:postid>')
 def add_to_bookmarks(postid):
     add_post_to_bookmarks(postid)
     return redirect('/', code=302)
 
+
 # Урл для удаление поста из закладкок
 @app.route('/bookmarks/remove/<int:postid>')
 def remove_from_bookmarks(postid):
     delete_post_from_bookmarks(postid)
     return redirect('/', code=302)
+
 
 # Отображение для списка постов, добавленных в закладки
 @app.route('/bookmarks')
@@ -215,7 +221,7 @@ def add_comment(postid):
 
 
 #
-#s
+# s
 #
 
 if __name__ == '__main__':
